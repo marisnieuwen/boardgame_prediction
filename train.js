@@ -125,6 +125,7 @@ function testDifferentKValues(knn, cleanDataArray, idToTitleMap, splitData) {
   }
 }
 
+// Variatie check
 function calculateBasicStats(trainingSet) {
   const numFeatures = trainingSet[0].features.length;
   const featureSums = Array(numFeatures).fill(0);
