@@ -19,6 +19,7 @@ function loadData() {
       console.log("Voorspelde label voor het nieuwe datapunt:", predictedTitle);
 
       const { trainingSet, testSet } = splitData(cleanDataArray);
+      calculateBasicStats(trainingSet);
 
       // trainKNN(knn, trainingSet);
 
@@ -122,6 +123,37 @@ function testDifferentKValues(knn, cleanDataArray, idToTitleMap, splitData) {
     const accuracy = testAccuracy(knnNew, testSet);
     console.log(`K=${k} heeft een nauwkeurigheid van ${accuracy.toFixed(2)}%`);
   }
+}
+
+function calculateBasicStats(trainingSet) {
+  const numFeatures = trainingSet[0].features.length;
+  const featureSums = Array(numFeatures).fill(0);
+  const featureCounts = Array(numFeatures).fill(0);
+
+  for (const game of trainingSet) {
+    for (let i = 0; i < numFeatures; i++) {
+      featureSums[i] += game.features[i];
+      featureCounts[i]++;
+    }
+  }
+
+  const featureMeans = featureSums.map(
+    (sum, index) => sum / featureCounts[index]
+  );
+
+  const featureSquaredDiffs = Array(numFeatures).fill(0);
+  for (const game of trainingSet) {
+    for (let i = 0; i < numFeatures; i++) {
+      featureSquaredDiffs[i] += Math.pow(game.features[i] - featureMeans[i], 2);
+    }
+  }
+
+  const featureStdDevs = featureSquaredDiffs.map((squaredDiff, index) =>
+    Math.sqrt(squaredDiff / featureCounts[index])
+  );
+
+  console.log("Gemiddelden:", featureMeans);
+  console.log("Standaarddeviaties:", featureStdDevs);
 }
 
 // Train het model en sla de trainingsgegevens op
